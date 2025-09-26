@@ -71,9 +71,5 @@ npm run start:dev
 👨‍💻 Autor
 Martín Arreguín Molina
 
-LinkedIn: [Tu Perfil de LinkedIn]
-
-GitHub: [Tu Perfil de GitHub]
-
 🏫 Institución Educativa
 Tecnológico Nacional de México en Salvatierra
