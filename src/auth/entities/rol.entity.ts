@@ -3,7 +3,7 @@
     24/09/2025
 */
 
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "./user.entity";
 import { ApiProperty } from "@nestjs/swagger";
 
@@ -40,7 +40,7 @@ export class Rol {
         example: User,
         description: 'User',
     })
-    @ManyToOne(
+    @ManyToMany(
         () => User,
         (user) => user.roles,
     )

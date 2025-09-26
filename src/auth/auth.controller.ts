@@ -3,16 +3,23 @@ import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { CreateRolDto } from './dto/create-rol.dto';
+import { LoginUserDto } from './dto/login-user.dto';
+import { User } from './entities/user.entity';
 import { Auth } from './decorators/auth.decorator';
-import { ValidRoles } from './interfaces/valid-roles';
+import { GetUser } from './decorators/get-user.decorator';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post()
+  @Post('register')
   createUser(@Body() createUserDto: CreateUserDto) {
     return this.authService.createUser(createUserDto);
+  }
+
+  @Post('login')
+  login(@Body() loginUserDto : LoginUserDto){
+    return this.authService.login(loginUserDto)
   }
 
   @Post('rol')
@@ -20,14 +27,21 @@ export class AuthController {
     return this.authService.createRol(createRolDto)
   }
   
+  @Get('check-auth')
+  @Auth()
+  checkAuthStatus(@GetUser() user: User){
+    return this.authService.checkAuthStatus(user)
+  }
+
   @Get()
   findAll() {
     return this.authService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.authService.findOne(+id);
+
+  @Get(':term')
+  findOne(@Param('term') term: string) {
+    return this.authService.planeUserResponse(term);
   }
 
   @Patch(':id')

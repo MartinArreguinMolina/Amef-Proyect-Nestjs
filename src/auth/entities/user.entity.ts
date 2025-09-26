@@ -3,7 +3,7 @@
     24/09/2025
 */
 
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Rol } from "./rol.entity";
 import { ApiProperty } from "@nestjs/swagger";
 
@@ -69,12 +69,18 @@ export class User {
         description: 'Uuid Roles',
         uniqueItems: true
     })
-    @OneToMany(
+    @ManyToMany(
         () => Rol,
         (rol) => rol.user,
-        // La propiedad eager realiza todos los inner join correspondientes 
         {cascade: true, eager: true}
     )
+    @JoinTable({
+        name: 'users_roles'
+    })
     roles: Rol[];
 
+    @BeforeInsert()
+    private beforeInsertFullName(){
+        this.fullName = this.fullName.toLowerCase().trim()
+    }
 }

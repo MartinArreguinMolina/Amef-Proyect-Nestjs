@@ -1,15 +1,17 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { HandleErrors } from 'src/common/handleErros';
 import * as bcrypt from 'bcrypt';
 import { CreateRolDto } from './dto/create-rol.dto';
 import { Rol } from './entities/rol.entity';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './interfaces/jwt-payload-interface';
+import { isUUID } from 'class-validator';
+import { LoginUserDto } from './dto/login-user.dto';
 
 
 @Injectable()
@@ -27,8 +29,14 @@ export class AuthService {
   ) { }
 
 
-  async planeUser(user: User){
-    const {password ,roles,...values} = user;
+  async planeUserResponse(term: string) {
+    const user = await this.findOne(term)
+
+    return this.planeUser(user)
+  }
+
+  async planeUser(user: User,) {
+    const { password, roles, ...values } = user;
 
     const currentRoles = roles.map((rol) => {
       return rol.rol
@@ -36,16 +44,16 @@ export class AuthService {
 
     return {
       ...values,
-      roles: currentRoles
+      roles: currentRoles,
+      token: this.getJwtToken({id: user.id})
     }
-
   }
 
 
   async findRoles(uuidRoles: string[]) {
 
     const currentRoles = uuidRoles.map((rol) => {
-      return this.rolRepository.findOneBy({ id: rol})
+      return this.rolRepository.findOneBy({ id: rol })
     })
 
     const roles = await Promise.all(currentRoles);
@@ -61,7 +69,6 @@ export class AuthService {
 
   async createUser(createUserDto: CreateUserDto) {
 
-
     try {
       const { password, roles, ...values } = createUserDto;
 
@@ -69,16 +76,13 @@ export class AuthService {
 
       const user = this.userRepository.create({
         roles: currentRoles,
-        password: bcrypt.hashSync(password, 10),
+        password: await bcrypt.hash(password, 10),
         ...values
       })
 
       await this.userRepository.save(user)
-      const currenUser = await this.planeUser(user);
-      return {
-        ...currenUser, 
-        token: this.getJwtToken({id: user.id})
-      }
+      const currentUser = await this.planeUser(user)
+      return currentUser;
     } catch (error) {
       HandleErrors.handleDBErrors(error)
     }
@@ -98,22 +102,75 @@ export class AuthService {
 
   async findAll() {
 
-    const users = await this.userRepository.find({
-      relations: {
-        roles: true
-      }
-    })
+    const users = await this.userRepository.find()
 
-    const currentUsers = Promise.all(
-      users.map((user) => this.planeUser(user))
-    )
+    return users.map((user) => {
+      const {password, roles, ...userData} = user
 
-    return currentUsers;
+      const currentRoles = roles.map((rol) => {
+        return rol.rol
+      })
+
+      return {
+        ...userData,
+        roles: currentRoles
+      } 
+    });
 
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
+  async findOne(term: string) {
+    let user: User | User[] | null = null;
+
+    if (isUUID(term)) {
+      user = await this.userRepository.findOneBy({ id: term })
+    } else {
+      user = await this.userRepository.findOne({
+        where: [
+          { fullName: ILike(`%${term.trim()}%`) },
+          { email: term },
+        ],
+      })
+    }
+
+    if (!user) throw new NotFoundException('El usuario no fue encontrado')
+
+
+    return user;
+  }
+
+
+  async checkAuthStatus(user: User) {
+    const currentUser = await this.planeUser(user)
+    return {
+      ...currentUser,
+      token: this.getJwtToken({ id: user.id })
+    }
+  }
+
+  async login(loginUserDto: LoginUserDto) {
+    const { password, email } = loginUserDto;
+
+    const user = await this.userRepository.findOne({
+      where: {
+        email
+      },
+    })
+
+
+    if (!user || !await bcrypt.compare(password, user.password))
+      throw new UnauthorizedException('Las credenciales no son validas')
+
+
+    const currentUser = await this.planeUser(user)
+
+    return currentUser;
+
+  }
+
+  private getJwtToken(payload: JwtPayload) {
+    const token = this.jwtService.sign(payload)
+    return token
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
@@ -122,11 +179,5 @@ export class AuthService {
 
   remove(id: number) {
     return `This action removes a #${id} auth`;
-  }
-
-
-  private getJwtToken(payload: JwtPayload){
-    const token = this.jwtService.sign(payload)
-    return token
   }
 }
