@@ -2,16 +2,18 @@ import { Module } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { OrganizationalInformationModule } from './organizational-information/organizational-information.module';
+import { AmefReportModule } from './amef-report/amef-report.module';
+import { PrinterModule } from './printer/printer.module';
+import { AnalysisModule } from './analysis/analysis.module';
+import { ActionModule } from './action/action.module';
 
 @Module({
   imports: [
 
-    
     AuthModule,
-
     // Variables de entorno
     ConfigModule.forRoot(),
-
 
     TypeOrmModule.forRoot({
       type: 'postgres', 
@@ -23,6 +25,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       autoLoadEntities: true,
       synchronize: true
     }),
+
+    OrganizationalInformationModule,
+
+    AmefReportModule,
+
+    PrinterModule,
+
+    AnalysisModule,
+
+    ActionModule,
 
   ],
   controllers: [],

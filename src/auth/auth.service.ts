@@ -28,7 +28,6 @@ export class AuthService {
 
   ) { }
 
-
   async planeUserResponse(term: string) {
     const user = await this.findOne(term)
 
@@ -36,7 +35,7 @@ export class AuthService {
   }
 
   async planeUser(user: User,) {
-    const { password, roles, ...values } = user;
+    const { roles, ...values } = user;
 
     const currentRoles = roles.map((rol) => {
       return rol.rol
@@ -105,7 +104,7 @@ export class AuthService {
     const users = await this.userRepository.find()
 
     return users.map((user) => {
-      const {password, roles, ...userData} = user
+      const {roles, ...userData} = user
 
       const currentRoles = roles.map((rol) => {
         return rol.rol

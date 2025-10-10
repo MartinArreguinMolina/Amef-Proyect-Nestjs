@@ -3,9 +3,11 @@
     24/09/2025
 */
 
-import { BeforeInsert, Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, Or, PrimaryGeneratedColumn } from "typeorm";
 import { Rol } from "./rol.entity";
 import { ApiProperty } from "@nestjs/swagger";
+import { OrganizationalInformation } from "src/organizational-information/entities/organizational-information.entity";
+import { Exclude } from "class-transformer";
 
 @Entity()
 export class User {
@@ -25,9 +27,7 @@ export class User {
         description: 'Full Name',
         uniqueItems: true
     })
-    @Column('text', {
-        unique: true
-    })
+    @Column('text')
     fullName: string;
 
     @ApiProperty({
@@ -45,6 +45,7 @@ export class User {
         example: 'Abc123',
         description: 'Password',
     })
+    @Exclude()
     @Column('text')
     password: string;
 
@@ -57,12 +58,6 @@ export class User {
         default: true
     })
     isActive: boolean;
-
-
-    // TODO: UN USUARIO PUEDE TENER MUCHOS ROLES 
-    /*
-    Relacion OneToMany()
-    */
 
     @ApiProperty({
         example: '[0bf71a00-b5ad-4e32-b831-2ed2afa140e6,0bf71a00-b5ad-4e32-b831-2ed2afa140e6]',
@@ -79,6 +74,13 @@ export class User {
     })
     roles: Rol[];
 
+
+    @OneToMany(
+        () => OrganizationalInformation,
+        (organizationalInformation) => organizationalInformation.preparedBy
+    )
+    organizationalInformation: OrganizationalInformation[]
+    
     @BeforeInsert()
     private beforeInsertFullName(){
         this.fullName = this.fullName.toLowerCase().trim()
