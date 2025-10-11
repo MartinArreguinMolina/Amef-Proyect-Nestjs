@@ -44,6 +44,11 @@ export class AuthController {
     return this.authService.planeUserResponse(term);
   }
 
+  @Get('users/:term')
+  findUsersBy(@Param('term') term: string){
+    return this.authService.findUsersBy(term)
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.authService.update(+id, updateUserDto);

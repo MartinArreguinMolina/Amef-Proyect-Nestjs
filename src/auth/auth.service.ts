@@ -139,6 +139,22 @@ export class AuthService {
   }
 
 
+  async findUsersBy(term: string){
+    let users: User[] | null = null;
+
+    users = await this.userRepository.find({
+      where: [
+        {fullName: ILike(`%${term.toLowerCase().trim()}%`)},
+        {email: ILike(`%${term}%`)}
+      ],
+    })
+
+    if(!users) throw new NotFoundException(`No se encontraron usuarios con ${term}`)
+
+    return users
+  }
+
+
   async checkAuthStatus(user: User) {
     const currentUser = await this.planeUser(user)
     return {
