@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateOrganizationalInformationDto } from './dto/create-organizational-information.dto';
 import { UpdateOrganizationalInformationDto } from './dto/update-organizational-information.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { OrganizationalInformation } from './entities/organizational-information.entity';
 import { HandleErrors } from 'src/common/handleErros';
 import { isUUID } from 'class-validator';
@@ -20,9 +20,9 @@ export class OrganizationalInformationService {
   async planeOrganizationalInformation(organizationalInformation: OrganizationalInformation) {
     const { preparedBy, ...rest } = organizationalInformation;
     const { password, roles, ...planePreparedBy } = preparedBy;
-    
-    const currentRoles = {      
-      roles : roles.map(rol => {
+
+    const currentRoles = {
+      roles: roles.map(rol => {
         return rol.rol;
       })
     }
@@ -55,7 +55,7 @@ export class OrganizationalInformationService {
   async findAll() {
     const currentAmefs = await this.organizationalInformationRepository.find(
       {
-        relations: {preparedBy: true}
+        relations: { preparedBy: true }
       }
     )
 
@@ -64,7 +64,6 @@ export class OrganizationalInformationService {
     })
 
     const planeAmefs = Promise.all(amefs)
-
 
     return planeAmefs
   }
@@ -75,15 +74,32 @@ export class OrganizationalInformationService {
     if (isUUID(term)) {
       organizationalInformation = await this.organizationalInformationRepository.findOne(
         {
-          where: {amefId: term},
-          relations: {preparedBy: true, analysis: true}
+          where: { amefId: term },
+          relations: { preparedBy: true, analysis: true }
         }
       );
     }
 
-
     if (!organizationalInformation) throw new NotFoundException('Organizational Information not found');
 
+
+    return organizationalInformation;
+  }
+
+  async findAllByTerm(term: string) {
+    let organizationalInformation: OrganizationalInformation[] | null;
+
+    organizationalInformation = await this.organizationalInformationRepository.find({
+      where: [
+        { preparedBy: { fullName: ILike(`%${term}%`) } },
+        { component: ILike(`%${term}%`) },
+        { system: ILike(`%${term}%`) },
+        { subsystem: ILike(`%${term}%`) },
+      ],
+      relations: ['preparedBy']
+    })
+
+    if (!organizationalInformation) throw new NotFoundException('Organizational Information not found')
 
     return organizationalInformation;
   }

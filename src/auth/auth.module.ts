@@ -8,6 +8,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { Department } from 'src/departments/entities/department.entity';
+import { DepartmentsModule } from 'src/departments/departments.module';
 
 @Module({
   controllers: [AuthController],
@@ -17,7 +19,9 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     // Variables de entorno
     ConfigModule,
 
-    TypeOrmModule.forFeature([User, Rol]),
+    DepartmentsModule,
+
+    TypeOrmModule.forFeature([User, Rol, Department]),
 
     PassportModule.register({defaultStrategy: 'jwt'}),
 
@@ -36,7 +40,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
           }
         }
       }
-    })
+    }),
   ],
 
   exports: [

@@ -12,6 +12,7 @@ import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './interfaces/jwt-payload-interface';
 import { isUUID } from 'class-validator';
 import { LoginUserDto } from './dto/login-user.dto';
+import { Department } from 'src/departments/entities/department.entity';
 
 
 @Injectable()
@@ -24,6 +25,9 @@ export class AuthService {
     @InjectRepository(Rol)
     private readonly rolRepository: Repository<Rol>,
 
+    @InjectRepository(Department)
+    private readonly departmentRepository: Repository<Department>,
+
     private readonly jwtService: JwtService
 
   ) { }
@@ -34,18 +38,42 @@ export class AuthService {
     return this.planeUser(user)
   }
 
-  async planeUser(user: User,) {
-    const { roles, ...values } = user;
+  async planeUser(user: User) {
+    const { roles, departaments, password, ...values } = user;
 
     const currentRoles = roles.map((rol) => {
       return rol.rol
     })
 
+    const currentDepartment = departaments.map(departament => {
+      return departament.department;
+    })
+
     return {
       ...values,
       roles: currentRoles,
+      departaments: currentDepartment,
       token: this.getJwtToken({id: user.id})
     }
+  }
+
+  async findUsersByDepartment(department: string, user: string){
+    let users: User[] | null = null;
+
+
+    users = await this.userRepository.find({
+      where: [
+        {departaments: {department: department},  fullName: ILike(`%${user}%`)}
+      ]
+    })
+
+    const promiseUsers = users.map((user) => {
+      return this.planeUser(user)
+    })
+
+    const currentUsers = Promise.all(promiseUsers)
+
+    return currentUsers;
   }
 
 
@@ -58,22 +86,37 @@ export class AuthService {
     const roles = await Promise.all(currentRoles);
 
 
-    if (roles.some(rol => rol === null)) {
-      throw new NotFoundException('Uno o más de los roles especificados no fueron encontrados');
-    }
+    if (roles.some(rol => rol === null)) throw new NotFoundException('Uno o más de los roles especificados no fueron encontrados');
 
 
     return roles as Rol[];
   }
 
+
+  async findDepartment(uuidDepartment: string[]){
+
+    const currentDepartment = uuidDepartment.map((d) => {
+      return this.departmentRepository.findOneBy({id: d})
+    })
+
+    const departament = await Promise.all(currentDepartment);
+
+    if(currentDepartment.some((d) => d === null)) throw new NotFoundException('Uno o mas de los roles especificados no fueron encontrados')
+
+
+    return departament as Department[];
+  }
+
   async createUser(createUserDto: CreateUserDto) {
 
     try {
-      const { password, roles, ...values } = createUserDto;
+      const { password, roles, departments, ...values } = createUserDto;
 
       const currentRoles = await this.findRoles(roles);
+      const currentDepartments = await this.findDepartment(departments)
 
       const user = this.userRepository.create({
+        departaments: currentDepartments,
         roles: currentRoles,
         password: await bcrypt.hash(password, 10),
         ...values
@@ -83,6 +126,7 @@ export class AuthService {
       const currentUser = await this.planeUser(user)
       return currentUser;
     } catch (error) {
+      console.log(error)
       HandleErrors.handleDBErrors(error)
     }
   }

@@ -18,6 +18,11 @@ export class OrganizationalInformationController {
     return this.organizationalInformationService.findAll();
   }
 
+  @Get('findAllByTerm/:term')
+  findAllByTerm(@Param('term') term: string){
+    return this.organizationalInformationService.findAllByTerm(term)
+  }
+
   @Get(':term')
   findOne(@Param('term') term: string) {
     return this.organizationalInformationService.findOne(term);

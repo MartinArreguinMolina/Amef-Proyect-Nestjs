@@ -58,4 +58,9 @@ export class CreateUserDto {
     @IsArray()
     @IsString({ each: true })
     roles: string[];
+
+
+    @IsString({each: true})
+    @IsArray()
+    departments: string[]
 }

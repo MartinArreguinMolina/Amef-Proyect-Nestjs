@@ -7,6 +7,7 @@ import { AmefReportModule } from './amef-report/amef-report.module';
 import { PrinterModule } from './printer/printer.module';
 import { AnalysisModule } from './analysis/analysis.module';
 import { ActionModule } from './action/action.module';
+import { DepartmentsModule } from './departments/departments.module';
 
 @Module({
   imports: [
@@ -35,6 +36,8 @@ import { ActionModule } from './action/action.module';
     AnalysisModule,
 
     ActionModule,
+
+    DepartmentsModule,
 
   ],
   controllers: [],

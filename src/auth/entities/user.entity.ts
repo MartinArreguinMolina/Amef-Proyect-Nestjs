@@ -8,6 +8,7 @@ import { Rol } from "./rol.entity";
 import { ApiProperty } from "@nestjs/swagger";
 import { OrganizationalInformation } from "src/organizational-information/entities/organizational-information.entity";
 import { Exclude } from "class-transformer";
+import { Department } from "src/departments/entities/department.entity";
 
 @Entity()
 export class User {
@@ -80,6 +81,15 @@ export class User {
         (organizationalInformation) => organizationalInformation.preparedBy
     )
     organizationalInformation: OrganizationalInformation[]
+
+    @ManyToMany(
+        () => Department,
+        {cascade: true, eager: true}
+    )
+    @JoinTable({
+        name: "users_departament"
+    })
+    departaments: Department[]
     
     @BeforeInsert()
     private beforeInsertFullName(){
