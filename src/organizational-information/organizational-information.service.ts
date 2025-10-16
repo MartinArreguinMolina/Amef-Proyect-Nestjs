@@ -52,6 +52,18 @@ export class OrganizationalInformationService {
     }
   }
 
+
+  async findAllById(id: string){
+    const organizationalInformation = await this.organizationalInformationRepository.find({
+      where: {preparedBy: {id: id}},
+      relations: {preparedBy: true}
+    })
+
+
+    return organizationalInformation;
+  }
+
+
   async findAll() {
     const currentAmefs = await this.organizationalInformationRepository.find(
       {
@@ -82,7 +94,6 @@ export class OrganizationalInformationService {
 
     if (!organizationalInformation) throw new NotFoundException('Organizational Information not found');
 
-
     return organizationalInformation;
   }
 
@@ -99,7 +110,20 @@ export class OrganizationalInformationService {
       relations: ['preparedBy']
     })
 
-    if (!organizationalInformation) throw new NotFoundException('Organizational Information not found')
+    return organizationalInformation;
+  }
+
+  async findAmefByIdAndTerm(id: string, term: string){
+
+    const organizationalInformation = await this.organizationalInformationRepository.find({
+      where: [
+        {preparedBy: {id: id}, system: ILike(`%${term}%`)},
+        {preparedBy: {id: id}, component: ILike(`%${term}%`)},
+        {preparedBy: {id: id}, subsystem: ILike(`%${term}%`)}
+      ],
+
+      relations: ['preparedBy']
+    })
 
     return organizationalInformation;
   }

@@ -52,22 +52,13 @@ export class AnalysisService {
 
   async updateInAmef(amefId: string, analysisId: string, dto: UpdateAnalysisDto) {
     const analysis = await this.findOneInAmef(amefId, analysisId);
-
-    // Tomar los valores nuevos si vienen, si no usar los actuales
     const severity = dto.severity ?? analysis.severity;
     const occurrence = dto.occurrence ?? analysis.occurrence;
     const detection = dto.detection ?? analysis.detection;
 
-    // Recalcular NPR
     analysis.npr = severity * occurrence * detection;
 
-    // Actualizar el resto de campos
     Object.assign(analysis, dto);
-
-    // const currentAnalysis = await this.analysisRepository.preload({
-    //   id: analysis.id,
-    //   ...dto
-    // });
 
     return this.analysisRepository.save(analysis);
   }

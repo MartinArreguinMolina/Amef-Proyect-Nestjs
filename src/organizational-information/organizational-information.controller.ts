@@ -12,6 +12,16 @@ export class OrganizationalInformationController {
   create(@Body() createOrganizationalInformationDto: CreateOrganizationalInformationDto) {
     return this.organizationalInformationService.create(createOrganizationalInformationDto);
   }
+  
+  @Get(':id/term/:term')
+  async findAllByIdAndTerm(@Param('id') id: string, @Param('term') term: string){
+    return this.organizationalInformationService.findAmefByIdAndTerm(id, term)
+  }
+
+  @Get(':id')
+  async findAlLById(@Param('id', ParseUUIDPipe) id: string){
+    return this.organizationalInformationService.findAllById(id)
+  }
 
   @Get()
   findAll() {

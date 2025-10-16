@@ -9,11 +9,17 @@ export class AmefReportController {
   @Get(':id')
   async generateAmefReport(@Param('id', ParseUUIDPipe) id: string, @Res() response: Response) {
     const pdfDoc = await this.amefReportService.getAmefReport(id);
-
-    response.setHeader('Content-Type', 'application/pdf')
-    pdfDoc.info.Title = `Amef ${id}`
+    response.setHeader('Content-Type', 'application/pdf');
+    pdfDoc.info.Title = `Amef ${id}`;
     pdfDoc.pipe(response);
-    pdfDoc.end()
+    pdfDoc.end();
+  }
+
+  @Get(':id/amef')
+  async exportExcel(@Param('id', ParseUUIDPipe) id: string, @Res() res: Response) {
+    const buf = await this.amefReportService.getAmefExcel(id);
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', `attachment; filename="amef-${id}.xlsx"`);
+    res.send(buf);
   }
 }
-
