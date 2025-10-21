@@ -1,8 +1,9 @@
-import { ArrayMinSize, IsArray, IsDateString, IsInt, IsNotEmpty, IsOptional, IsPositive, IsString, IsUUID, MinLength } from "class-validator";
+import { ArrayMinSize, ArrayUnique, IS_UUID, IsArray, IsDateString, IsInt, IsNotEmpty, IsOptional, IsPositive, IsString, IsUUID, MinLength } from "class-validator";
 
 export class CreateOrganizationalInformationDto {
     @IsArray()
-    @IsString({each: true, })
+    @IsUUID('all', {each: true})
+    @ArrayUnique()
     @IsNotEmpty({each: true})
     @ArrayMinSize(1)
     team: string[]

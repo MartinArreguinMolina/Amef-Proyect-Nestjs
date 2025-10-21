@@ -7,6 +7,7 @@ import { OrganizationalInformation } from './entities/organizational-information
 import { HandleErrors } from 'src/common/handleErros';
 import { isUUID } from 'class-validator';
 import { AuthService } from '../auth/auth.service';
+import { User } from 'src/auth/entities/user.entity';
 
 @Injectable()
 export class OrganizationalInformationService {
@@ -18,7 +19,7 @@ export class OrganizationalInformationService {
   ) { }
 
   async planeOrganizationalInformation(organizationalInformation: OrganizationalInformation) {
-    const { preparedBy, ...rest } = organizationalInformation;
+    const { team, preparedBy, ...rest } = organizationalInformation;
     const { password, roles, ...planePreparedBy } = preparedBy;
 
     const currentRoles = {
@@ -27,23 +28,44 @@ export class OrganizationalInformationService {
       })
     }
 
+    const currentTeam = team.map((user) => {
+      const department = user.departaments.map(d => {
+        return d.department;
+      })
+
+      return {
+        id: user.id,
+        fullName: user.fullName,
+        department
+      }
+    })
+
     return {
       ...rest,
       preparedBy: {
         ...planePreparedBy,
         ...currentRoles
-      }
+      },
+      team: currentTeam,
     }
   }
 
   async create(createOrganizationalInformationDto: CreateOrganizationalInformationDto) {
 
-    const user = await this.authService.findOne(createOrganizationalInformationDto.preparedById);
+    const preparedBy = await this.authService.findOne(createOrganizationalInformationDto.preparedById);
+    const { team: teamDto, ...organizationalInformationData } = createOrganizationalInformationDto;
+
+    const currentTeam = teamDto.map((user) => {
+      return this.authService.findOne(user);
+    })
+
+    const teamMembers = await Promise.all(currentTeam);
 
     try {
       const organizationalInformation = this.organizationalInformationRepository.create({
-        preparedBy: user,
-        ...createOrganizationalInformationDto
+        preparedBy,
+        team: teamMembers,
+        ...organizationalInformationData
       });
       await this.organizationalInformationRepository.save(organizationalInformation);
       return this.planeOrganizationalInformation(organizationalInformation);
@@ -53,10 +75,39 @@ export class OrganizationalInformationService {
   }
 
 
-  async findAllById(id: string){
+  async findTeam(id: string) {
+
+    const organizationalInformation = await this.organizationalInformationRepository.find(
+      {
+        where: {
+          team: { id: id }
+        },
+        relations: { preparedBy: true }
+      }
+    )
+
+    return organizationalInformation;
+  }
+
+  async findTeamByTerm(id: string, term: string) {
     const organizationalInformation = await this.organizationalInformationRepository.find({
-      where: {preparedBy: {id: id}},
-      relations: {preparedBy: true}
+      where: [
+        { team: { id }, system: ILike(`%${term}%`) },
+        { team: { id }, subsystem: ILike(`%${term}%`) },
+        { team: { id }, component: ILike(`%${term}%`) },
+      ],
+      relations: { preparedBy: true }
+    })
+
+    return organizationalInformation;
+  }
+
+
+  async findAllById(id: string) {
+
+    const organizationalInformation = await this.organizationalInformationRepository.find({
+      where: { preparedBy: { id: id } },
+      relations: { preparedBy: true }
     })
 
 
@@ -67,7 +118,7 @@ export class OrganizationalInformationService {
   async findAll() {
     const currentAmefs = await this.organizationalInformationRepository.find(
       {
-        relations: { preparedBy: true }
+        relations: { preparedBy: true, team: true }
       }
     )
 
@@ -87,7 +138,7 @@ export class OrganizationalInformationService {
       organizationalInformation = await this.organizationalInformationRepository.findOne(
         {
           where: { amefId: term },
-          relations: { preparedBy: true, analysis: true }
+          relations: { preparedBy: true, analysis: true, team: true }
         }
       );
     }
@@ -113,13 +164,13 @@ export class OrganizationalInformationService {
     return organizationalInformation;
   }
 
-  async findAmefByIdAndTerm(id: string, term: string){
+  async findAmefByIdAndTerm(id: string, term: string) {
 
     const organizationalInformation = await this.organizationalInformationRepository.find({
       where: [
-        {preparedBy: {id: id}, system: ILike(`%${term}%`)},
-        {preparedBy: {id: id}, component: ILike(`%${term}%`)},
-        {preparedBy: {id: id}, subsystem: ILike(`%${term}%`)}
+        { preparedBy: { id: id }, system: ILike(`%${term}%`) },
+        { preparedBy: { id: id }, component: ILike(`%${term}%`) },
+        { preparedBy: { id: id }, subsystem: ILike(`%${term}%`) }
       ],
 
       relations: ['preparedBy']
@@ -129,9 +180,27 @@ export class OrganizationalInformationService {
   }
 
   async update(id: string, updateOrganizationalInformationDto: UpdateOrganizationalInformationDto) {
+    const { preparedById, team: teamDto, ...res } = updateOrganizationalInformationDto
+
+    let preparedBy: User | undefined = undefined
+    let team: User[] | undefined = undefined;
+
+    if (preparedById)
+      preparedBy = await this.authService.findOne(preparedById);
+
+    if (teamDto) {
+      const currentUsers: Promise<User>[] = teamDto.map(userId => {
+        return this.authService.findOne(userId);
+      })
+
+      team = await Promise.all(currentUsers);
+    }
+
     const organizationalInformation = await this.organizationalInformationRepository.preload({
       amefId: id,
-      ...updateOrganizationalInformationDto
+      preparedBy,
+      team,
+      ...res
     })
 
     if (!organizationalInformation) throw new NotFoundException('Organizational Information not found');

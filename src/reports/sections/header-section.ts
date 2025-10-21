@@ -24,12 +24,12 @@ export const getHeaderSection = (body: OrganizationalInformation): Content => {
                         stack: [
                             { text: `Número AMFE: ${body.amefId}`, style: "headerFieldLabel" },
                             { text: `Revisión: ${body.revision}`, style: "headerFieldLabel" },
-                            { text: `Equipo: ${body.team}`, style: "headerFieldLabel" },
+                            { text: `Equipo: ${body.team.map(user => user.fullName.split(' ')[0])}`, style: "headerFieldLabel" },
                         ],
                     },
                     {
                         stack: [
-                            { text: `Sistema: ${body.system}`, style: `headerFieldLabel` },
+                            { text: `Sistema: ${body.system ?? ''}`, style: `headerFieldLabel` },
                             { text: `Sub-sistema: ${body.subsystem ?? ''}`, style: `headerFieldLabel` },
                             { text: `Componente: ${body.component ?? ''}`, style: `headerFieldLabel` },
                         ],

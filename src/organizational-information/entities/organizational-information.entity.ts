@@ -1,6 +1,6 @@
 import { Analysis } from "src/analysis/entities/analysis.entity";
 import { User } from "src/auth/entities/user.entity";
-import { BeforeInsert, BeforeUpdate, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class OrganizationalInformation {
@@ -12,10 +12,14 @@ export class OrganizationalInformation {
     })
     revision: number;
 
-    @Column('text', {
-        array: true,
+    @ManyToMany(
+        () => User,
+        (user) => user.OrganizationalInformation,
+    )
+    @JoinTable({
+        name: 'organization_information_team'
     })
-    team: string[]
+    team: User[]
 
     @Column('text', {
         nullable: true
@@ -37,10 +41,10 @@ export class OrganizationalInformation {
 
     @Column('text')
     leadingDepartment: string
-    
+
     @ManyToOne(
-        ()=> User,
-        (user)=> user.organizationalInformation,
+        () => User,
+        (user) => user.organizationalInformation,
     )
     preparedBy: User
 

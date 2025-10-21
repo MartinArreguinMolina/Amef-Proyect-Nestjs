@@ -3,7 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { ILike, Repository } from 'typeorm';
+import { ILike, Repository, Not} from 'typeorm';
 import { HandleErrors } from 'src/common/handleErros';
 import * as bcrypt from 'bcrypt';
 import { CreateRolDto } from './dto/create-rol.dto';
@@ -162,8 +162,12 @@ export class AuthService {
 
   }
 
+  async findOneById(id: string){
+
+  }
+
   async findOne(term: string) {
-    let user: User | User[] | null = null;
+    let user: User | null = null;
 
     if (isUUID(term)) {
       user = await this.userRepository.findOneBy({ id: term })
@@ -188,7 +192,7 @@ export class AuthService {
 
     users = await this.userRepository.find({
       where: [
-        {fullName: ILike(`%${term.toLowerCase().trim()}%`)},
+        {fullName: ILike(`%${term}%`)},
         {email: ILike(`%${term}%`)}
       ],
     })

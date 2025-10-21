@@ -1,8 +1,3 @@
-/*
-    Arreguin Molina Martin
-    24/09/2025
-*/
-
 import { BeforeInsert, Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, Or, PrimaryGeneratedColumn } from "typeorm";
 import { Rol } from "./rol.entity";
 import { ApiProperty } from "@nestjs/swagger";
@@ -12,8 +7,6 @@ import { Department } from "src/departments/entities/department.entity";
 
 @Entity()
 export class User {
-
-
     @ApiProperty({
         example: '0bf71a00-b5ad-4e32-b831-2ed2afa140e6',
         description: 'User ID',
@@ -21,7 +14,6 @@ export class User {
     })
     @PrimaryGeneratedColumn('uuid')
     id: string
-
 
     @ApiProperty({
         example: 'Martin Arreguin Molina',
@@ -67,8 +59,7 @@ export class User {
     })
     @ManyToMany(
         () => Rol,
-        (rol) => rol.user,
-        {cascade: true, eager: true}
+        { cascade: true, eager: true }
     )
     @JoinTable({
         name: 'users_roles'
@@ -84,15 +75,22 @@ export class User {
 
     @ManyToMany(
         () => Department,
-        {cascade: true, eager: true}
+        { cascade: true, eager: true }
     )
     @JoinTable({
         name: "users_departament"
     })
     departaments: Department[]
-    
+
+
+    @ManyToMany(
+        () => OrganizationalInformation,
+        (organizationalInformation) => organizationalInformation.team,
+    )
+    OrganizationalInformation: OrganizationalInformation[]
+
     @BeforeInsert()
-    private beforeInsertFullName(){
+    private beforeInsertFullName() {
         this.fullName = this.fullName.toLowerCase().trim()
     }
 }

@@ -15,29 +15,29 @@ export class Action {
   analysis: Analysis;
 
   @Column('text')
-  recommendedAction: string;  // Acción recomendada
+  recommendedAction: string; 
 
   @Column('text')
-  responsible: string;        // Responsable
+  responsible: string;       
 
   @Column('date')
-  targetDate: string;         // Fecha compromiso
+  targetDate: string;        
 
   @Column('text', { nullable: true })
-  implementedAction?: string; // Acción tomada
+  implementedAction?: string; 
 
   @Column('date', { nullable: true })
-  completionDate?: string;    // Fecha de cierre
+  completionDate?: string;   
 
   @Column('int', { nullable: true })
-  newSeverity?: number;       // Nueva S
+  newSeverity?: number;  
 
   @Column('int', { nullable: true })
-  newOccurrence?: number;     // Nueva O
+  newOccurrence?: number;  
 
   @Column('int', { nullable: true })
-  newDetection?: number;      // Nueva D
+  newDetection?: number;      
 
   @Column('int', { nullable: true })
-  newNpr?: number;            // Nuevo NPR
+  newNpr?: number;           
 }

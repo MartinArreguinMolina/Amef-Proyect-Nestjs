@@ -1,16 +1,10 @@
-/*
-    Arreguin Molina Martin
-    24/09/2025
-*/
-
-import { Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "./user.entity";
 import { ApiProperty } from "@nestjs/swagger";
 
 
 @Entity()
 export class Rol {
-
     @ApiProperty({
         example: '0bf71a00-b5ad-4e32-b831-2ed2afa140e6',
         description: 'Rol ID',
@@ -18,7 +12,6 @@ export class Rol {
     })
     @PrimaryGeneratedColumn('uuid')
     id: string;
-
 
     @ApiProperty({
         example: 'Admin',
@@ -29,20 +22,4 @@ export class Rol {
         unique: true
     })
     rol: string;
-
-
-    // TODO: MUCHOS ROLES PUEDEN PERTENECER A UN SOLO USUARIO
-    /*
-    Relacion ManyToOne()
-    */
-
-    @ApiProperty({
-        example: User,
-        description: 'User',
-    })
-    @ManyToMany(
-        () => User,
-        (user) => user.roles,
-    )
-    user: User;
 }

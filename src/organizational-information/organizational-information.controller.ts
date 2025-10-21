@@ -12,6 +12,16 @@ export class OrganizationalInformationController {
   create(@Body() createOrganizationalInformationDto: CreateOrganizationalInformationDto) {
     return this.organizationalInformationService.create(createOrganizationalInformationDto);
   }
+
+  @Get('amef/team/:id')
+  async findAmefTeam(@Param('id', ParseUUIDPipe) id: string){
+    return this.organizationalInformationService.findTeam(id);
+  }
+
+  @Get('amef/:id/term/:term')
+  async findAmefTeamByTerm(@Param('id', ParseUUIDPipe) id: string, @Param('term') term: string){
+    return this.organizationalInformationService.findTeamByTerm(id, term)
+  }
   
   @Get(':id/term/:term')
   async findAllByIdAndTerm(@Param('id') id: string, @Param('term') term: string){
@@ -33,7 +43,7 @@ export class OrganizationalInformationController {
     return this.organizationalInformationService.findAllByTerm(term)
   }
 
-  @Get(':term')
+  @Get('id/:term')
   findOne(@Param('term') term: string) {
     return this.organizationalInformationService.findOne(term);
   }

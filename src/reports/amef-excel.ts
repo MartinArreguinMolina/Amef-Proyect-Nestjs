@@ -39,7 +39,7 @@ export async function buildAmefExcel(org: OrganizationalInformation): Promise<Bu
   const kvRight: [string, any][] = [
     ['Número AMFE', safe(org.amefId)],
     ['Revisión', safe(org.revision)],
-    ['Equipo', safe(org.team)],
+    // ['Equipo', org.team.map(u => safe(u.fullName))],
     ['Código de proyecto', safe(org.proyectCode)],
     ['Departamento líder', safe(org.leadingDepartment)],
     ['Generado', new Date().toLocaleString()],
