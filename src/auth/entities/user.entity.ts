@@ -4,6 +4,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { OrganizationalInformation } from "src/organizational-information/entities/organizational-information.entity";
 import { Exclude } from "class-transformer";
 import { Department } from "src/departments/entities/department.entity";
+import { CommentAnalysis } from "src/comments/entities/comment.entity";
 
 @Entity()
 export class User {
@@ -82,12 +83,17 @@ export class User {
     })
     departaments: Department[]
 
-
     @ManyToMany(
         () => OrganizationalInformation,
         (organizationalInformation) => organizationalInformation.team,
     )
     OrganizationalInformation: OrganizationalInformation[]
+
+    @OneToMany(
+        () => CommentAnalysis,
+        (commentAnalysis) => commentAnalysis.user
+    )
+    comment: CommentAnalysis[]
 
     @BeforeInsert()
     private beforeInsertFullName() {

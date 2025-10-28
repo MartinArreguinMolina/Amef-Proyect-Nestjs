@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Department {
@@ -9,4 +9,10 @@ export class Department {
         unique: true
     })
     department: string
+
+
+    @BeforeInsert()
+    beforeInsertDeparmet(){
+        this.department = this.department.trim().toLowerCase()
+    }
 }

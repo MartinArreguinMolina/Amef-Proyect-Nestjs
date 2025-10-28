@@ -1,4 +1,4 @@
-import { IsInt, IsNotEmpty, IsOptional, IsPositive, IsString, Min, Max } from "class-validator";
+import { IsInt, IsNotEmpty, IsOptional, IsString, Min, Max } from "class-validator";
 
 export class CreateAnalysisDto {
 

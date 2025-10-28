@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "./user.entity";
 import { ApiProperty } from "@nestjs/swagger";
 
@@ -22,4 +22,9 @@ export class Rol {
         unique: true
     })
     rol: string;
+
+    @BeforeInsert()
+    beforeInsert(){
+        this.rol = this.rol.trim().toLowerCase()
+    }
 }

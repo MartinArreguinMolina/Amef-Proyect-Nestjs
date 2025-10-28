@@ -31,7 +31,6 @@ export class DepartmentsService {
   }
 
 
-
   async findAllByTerm(term: string) {
     let departments: Department[] | null = null;
 

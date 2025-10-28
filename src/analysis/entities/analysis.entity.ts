@@ -1,6 +1,7 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { OrganizationalInformation } from "src/organizational-information/entities/organizational-information.entity";
 import { Action } from 'src/action/entities/action.entity';
+import { CommentAnalysis } from 'src/comments/entities/comment.entity';
 
 @Entity()
 export class Analysis {
@@ -46,5 +47,12 @@ export class Analysis {
     detection: number;        
 
     @Column('int')
-    npr: number;              
+    npr: number;          
+    
+    @OneToMany(
+        () => CommentAnalysis,
+        (commentAnalysis) => commentAnalysis.analysis,
+        {cascade: true}
+    )
+    commentAnalysis:CommentAnalysis[]
 }

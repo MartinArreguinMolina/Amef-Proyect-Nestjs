@@ -8,6 +8,8 @@ import { PrinterModule } from './printer/printer.module';
 import { AnalysisModule } from './analysis/analysis.module';
 import { ActionModule } from './action/action.module';
 import { DepartmentsModule } from './departments/departments.module';
+import { CommentsModule } from './comments/comments.module';
+import { WebSocketModule } from './web-socket/web-socket.module';
 
 @Module({
   imports: [
@@ -38,6 +40,10 @@ import { DepartmentsModule } from './departments/departments.module';
     ActionModule,
 
     DepartmentsModule,
+
+    CommentsModule,
+
+    WebSocketModule,
 
   ],
   controllers: [],
