@@ -10,6 +10,7 @@ import { ActionModule } from './action/action.module';
 import { DepartmentsModule } from './departments/departments.module';
 import { CommentsModule } from './comments/comments.module';
 import { WebSocketModule } from './web-socket/web-socket.module';
+import { MessagesModule } from './messages/messages.module';
 
 @Module({
   imports: [
@@ -44,6 +45,8 @@ import { WebSocketModule } from './web-socket/web-socket.module';
     CommentsModule,
 
     WebSocketModule,
+
+    MessagesModule,
 
   ],
   controllers: [],

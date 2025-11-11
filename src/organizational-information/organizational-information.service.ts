@@ -15,7 +15,7 @@ export class OrganizationalInformationService {
     @InjectRepository(OrganizationalInformation)
     private readonly organizationalInformationRepository: Repository<OrganizationalInformation>,
 
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
   ) { }
 
   async planeOrganizationalInformation(organizationalInformation: OrganizationalInformation) {

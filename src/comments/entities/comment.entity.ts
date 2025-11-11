@@ -1,6 +1,6 @@
 import { Analysis } from "src/analysis/entities/analysis.entity";
 import { User } from "src/auth/entities/user.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
 export class CommentAnalysis {
@@ -10,24 +10,23 @@ export class CommentAnalysis {
     @Column('text')
     comment: string;
 
-    @Column('date')
-    date: string;
+    @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+    createdAt: Date;
 
-    @Column('date',{
-        nullable: true
-    })
-    modificationDate: string;
+    @UpdateDateColumn({ type: 'timestamptz', nullable: true })
+    updatedAt: Date | null;
 
     @ManyToOne(
         () => User,
-        (user) => user.comment
+        (user) => user.comment,
+        {eager: true}
     )
     user: User;
-    
+
     @ManyToOne(
         () => Analysis,
         (analysis) => analysis.commentAnalysis,
-        { onDelete: 'CASCADE' }
+        { onDelete: 'CASCADE', eager: true},
     )
     analysis: Analysis;
 }

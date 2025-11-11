@@ -11,11 +11,4 @@ export class CreateCommentDto {
     @IsUUID()
     @IsString()
     analysisUuid: string
-
-    @IsDateString()
-    date: string
-
-    @IsOptional()
-    @IsDateString()
-    modificationDate: string
 }

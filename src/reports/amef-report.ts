@@ -192,6 +192,42 @@ export const getAmefReport = (body: OrganizationalInformation): TDocumentDefinit
   const analyses = body?.analysis ?? [];
 
   const content: Content[] = [
+    {
+      text: 'Equipo',
+      bold: true,
+      fontSize: 12,
+      color: "#002B5B",
+      margin: [0,0,0,10]
+    },
+    {
+      table: {
+        headerRows: 1,
+        widths: ['20%', '20%', '20%'],
+        body: [
+          [
+            { text: 'Nombre', bold: true, color: '#ffffff', fillColor: "#002B5B", margin: [8, 6, 8, 6] },
+            { text: 'Email', bold: true, color: '#ffffff', fillColor: "#002B5B", margin: [8, 6, 8, 6] },
+            { text: 'Departamento', bold: true, color: '#ffffff', fillColor: "#002B5B", margin: [8, 6, 8, 6] },
+          ],
+
+          ...(body.team).map(u => ([
+            { text: u?.fullName ?? '—', margin: [8, 4, 8, 4] },
+            { text: u?.email ?? '—', margin: [8, 4, 8, 4] },
+            { text: u?.departaments?.[0]?.department ?? '—', margin: [8, 4, 8, 4] },
+          ])),
+        ],
+      },
+
+      layout: {
+        hLineWidth: () => 0.2,
+        vLineWidth: () => 0.2,
+        paddingLeft: () => 0.2,
+        paddingRight: () => 0.2,
+        paddingTop: () => 0.2,
+        paddingBottom: () => 0.2,
+      },
+    },
+
     { text: "Resumen de análisis", style: "sectionTitle", margin: [0, 8, 0, 4] },
     ...analyses.flatMap((a, idx) => buildAnalysisBlock(a, idx)),
   ];

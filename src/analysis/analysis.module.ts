@@ -11,7 +11,8 @@ import { Analysis } from './entities/analysis.entity';
   imports: [
     TypeOrmModule.forFeature([Analysis]),
     
-    OrganizationalInformationModule
+    OrganizationalInformationModule,
+
   ],
   exports: [AnalysisService],
 })

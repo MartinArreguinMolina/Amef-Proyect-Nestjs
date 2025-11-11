@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CommentAnalysis } from './entities/comment.entity';
 import { AuthModule } from 'src/auth/auth.module';
 import { AnalysisModule } from 'src/analysis/analysis.module';
+import { MessagesModule } from 'src/messages/messages.module';
 
 @Module({
   controllers: [CommentsController],
@@ -14,7 +15,10 @@ import { AnalysisModule } from 'src/analysis/analysis.module';
 
     AnalysisModule,
 
+    MessagesModule,
+
     TypeOrmModule.forFeature([CommentAnalysis])
-  ]
+  ],
+  exports: [CommentsService]
 })
 export class CommentsModule {}

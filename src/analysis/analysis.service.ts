@@ -14,7 +14,8 @@ export class AnalysisService {
     @InjectRepository(Analysis)
     private readonly analysisRepository: Repository<Analysis>,
 
-    private readonly organizationalInformationService: OrganizationalInformationService
+    private readonly organizationalInformationService: OrganizationalInformationService,
+
   ) { }
 
   async create(createAnalysisDto: CreateAnalysisDto, amefId: string) {
@@ -28,7 +29,10 @@ export class AnalysisService {
         npr,
         ...createAnalysisDto,
       });
-      return this.analysisRepository.save(analysis);
+
+      const currentAnalysis = await this.analysisRepository.save(analysis);
+
+      return currentAnalysis;
     } catch (error) {
       HandleErrors.handleDBErrors(error);
     }
@@ -78,7 +82,10 @@ export class AnalysisService {
     let analysis: Analysis | null = null;
 
     if (isUUID(id)) {
-      analysis = await this.analysisRepository.findOneBy({ id });
+      analysis = await this.analysisRepository.findOne({
+        where: {id},
+        relations: {organizationalInformation: true }
+      });
     }
 
     if (!analysis) {

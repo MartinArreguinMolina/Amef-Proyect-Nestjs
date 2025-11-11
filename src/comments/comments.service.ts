@@ -8,6 +8,7 @@ import { HandleErrors } from 'src/common/handleErros';
 import { AuthService } from 'src/auth/auth.service';
 import { AnalysisService } from 'src/analysis/analysis.service';
 import { NotFoundError } from 'rxjs';
+import { MessagesGateway } from 'src/messages/messages.gateway';
 
 @Injectable()
 export class CommentsService {
@@ -17,6 +18,8 @@ export class CommentsService {
 
     private readonly authService: AuthService,
     private readonly analysisService: AnalysisService,
+
+    private readonly messagesGateway: MessagesGateway,
 
   ) { }
 
@@ -40,21 +43,35 @@ export class CommentsService {
   }
 
   async create(createCommentDto: CreateCommentDto) {
-    const user = await this.authService.findOne(createCommentDto.userUuid)
-    const analysis = await this.analysisService.findOne(createCommentDto.analysisUuid);
+    const [user,analysis] = await Promise.all([
+      this.authService.findOne(createCommentDto.userUuid),
+      this.analysisService.findOne(createCommentDto.analysisUuid)
+    ])
 
     try {
       const comment = this.commentAnalysisRepository.create({
-        date: createCommentDto.date,
         user: user,
         analysis: analysis,
         comment: createCommentDto.comment
       })
 
-      return this.commentAnalysisRepository.save(comment)
+      const currentComment = await this.commentAnalysisRepository.save(comment)
+      const planeComment = this.planeComments([currentComment])[0];
+      this.messagesGateway.emitCommentNew(analysis.id, planeComment);
+      return currentComment;
     } catch (error) {
       HandleErrors.handleDBErrors(error)
     }
+  }
+
+  async findOne(id: string){
+    let comment: CommentAnalysis | null = null;
+
+    comment = await this.commentAnalysisRepository.findOneBy({id})
+
+    if(!comment) throw new NotFoundException('El comentario no fue encontrado')
+
+      return comment;
   }
 
   async findAll() {
@@ -74,8 +91,10 @@ export class CommentsService {
           analysis: { id: id }
         },
         relations: { user: true, analysis: true },
+        order: { createdAt: 'DESC' }
       })
-      return this.planeComments(comments)
+      const currentComments = this.planeComments(comments)
+      return currentComments
     } catch (error) {
       HandleErrors.handleDBErrors(error)
     }
@@ -105,6 +124,7 @@ export class CommentsService {
           analysis: { id: analysisId },
         },
         relations: { user: true, analysis: true },
+        order: { createdAt: 'DESC' }
       })
       return this.planeComments(comments)
     } catch (error) {
@@ -121,6 +141,7 @@ export class CommentsService {
           comment: ILike(`%${term}%`)
         },
         relations: { user: true, analysis: true },
+        order: { createdAt: 'DESC' }
       })
       return this.planeComments(comments)
     } catch (error) {
@@ -129,19 +150,42 @@ export class CommentsService {
   }
 
   async update(id: string, updateCommentDto: UpdateCommentDto) {
+
     const comment = await this.commentAnalysisRepository.preload({
       id,
       ...updateCommentDto
     })
+
     if (!comment) throw new NotFoundException(`Comment with ${id} not found`)
+
+    const curretComment = await this.commentAnalysisRepository.findOne({
+      where: { id: id },
+      relations: { analysis: true }
+    })
+
+    const idAnalysis = curretComment?.analysis.id!;
+
     try {
-      return await this.commentAnalysisRepository.save(comment)
+      const currenComment = await this.commentAnalysisRepository.save(comment)
+      this.messagesGateway.updateComment(idAnalysis, currenComment);
+      return currenComment
     } catch (error) {
+      console.log(error);
       HandleErrors.handleDBErrors(error)
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} comment`;
+ async remove(id: string) {
+    const comment = await this.findOne(id)
+
+    try{
+      await this.commentAnalysisRepository.remove(comment);
+
+      this.messagesGateway.deleteComment(comment.analysis.id, comment)
+
+      return {message: 'El comentario fue eliminado exitosamente'}
+    }catch(error){
+      HandleErrors.handleDBErrors(error)
+    }
   }
 }
