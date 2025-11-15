@@ -91,7 +91,7 @@ export class CommentsService {
           analysis: { id: id }
         },
         relations: { user: true, analysis: true },
-        order: { createdAt: 'DESC' }
+        order: { createdAt: 'ASC' }
       })
       const currentComments = this.planeComments(comments)
       return currentComments
@@ -124,7 +124,7 @@ export class CommentsService {
           analysis: { id: analysisId },
         },
         relations: { user: true, analysis: true },
-        order: { createdAt: 'DESC' }
+        order: { createdAt: 'ASC' }
       })
       return this.planeComments(comments)
     } catch (error) {
@@ -141,7 +141,7 @@ export class CommentsService {
           comment: ILike(`%${term}%`)
         },
         relations: { user: true, analysis: true },
-        order: { createdAt: 'DESC' }
+        order: { createdAt: 'ASC' }
       })
       return this.planeComments(comments)
     } catch (error) {

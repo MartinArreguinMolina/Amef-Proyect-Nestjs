@@ -4,6 +4,7 @@ import { AnalysisController } from './analysis.controller';
 import { OrganizationalInformationModule } from 'src/organizational-information/organizational-information.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Analysis } from './entities/analysis.entity';
+import { RoomMembersModule } from 'src/room-members/room-members.module';
 
 @Module({
   controllers: [AnalysisController],
@@ -12,6 +13,9 @@ import { Analysis } from './entities/analysis.entity';
     TypeOrmModule.forFeature([Analysis]),
     
     OrganizationalInformationModule,
+
+
+    RoomMembersModule
 
   ],
   exports: [AnalysisService],

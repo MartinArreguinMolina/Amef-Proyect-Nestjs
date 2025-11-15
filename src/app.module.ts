@@ -11,6 +11,7 @@ import { DepartmentsModule } from './departments/departments.module';
 import { CommentsModule } from './comments/comments.module';
 import { WebSocketModule } from './web-socket/web-socket.module';
 import { MessagesModule } from './messages/messages.module';
+import { RoomMembersModule } from './room-members/room-members.module';
 
 @Module({
   imports: [
@@ -47,6 +48,8 @@ import { MessagesModule } from './messages/messages.module';
     WebSocketModule,
 
     MessagesModule,
+
+    RoomMembersModule,
 
   ],
   controllers: [],

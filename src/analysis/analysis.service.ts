@@ -7,6 +7,7 @@ import { Analysis } from './entities/analysis.entity';
 import { Repository } from 'typeorm';
 import { HandleErrors } from 'src/common/handleErros';
 import { isUUID } from 'class-validator';
+import { RoomMembersService } from 'src/room-members/room-members.service';
 
 @Injectable()
 export class AnalysisService {
@@ -16,6 +17,7 @@ export class AnalysisService {
 
     private readonly organizationalInformationService: OrganizationalInformationService,
 
+    private readonly roomMembersService: RoomMembersService
   ) { }
 
   async create(createAnalysisDto: CreateAnalysisDto, amefId: string) {
@@ -31,6 +33,22 @@ export class AnalysisService {
       });
 
       const currentAnalysis = await this.analysisRepository.save(analysis);
+
+      const roomMembers = currentAnalysis.organizationalInformation.team.map(u => {
+        return this.roomMembersService.create({
+          amefId: currentAnalysis.organizationalInformation.amefId,
+          userId: u.id,
+          analysisId: currentAnalysis.id
+        })
+      })
+
+      await this.roomMembersService.create({
+        amefId: currentAnalysis.organizationalInformation.amefId,
+        userId: currentAnalysis.organizationalInformation.preparedBy.id,
+        analysisId: currentAnalysis.id
+      })
+
+      await Promise.all(roomMembers);
 
       return currentAnalysis;
     } catch (error) {
@@ -83,8 +101,8 @@ export class AnalysisService {
 
     if (isUUID(id)) {
       analysis = await this.analysisRepository.findOne({
-        where: {id},
-        relations: {organizationalInformation: true }
+        where: { id },
+        relations: { organizationalInformation: true }
       });
     }
 
