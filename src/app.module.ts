@@ -12,21 +12,20 @@ import { CommentsModule } from './comments/comments.module';
 import { WebSocketModule } from './web-socket/web-socket.module';
 import { MessagesModule } from './messages/messages.module';
 import { RoomMembersModule } from './room-members/room-members.module';
+import { envs } from './config/envs';
 
 @Module({
   imports: [
 
     AuthModule,
-    // Variables de entorno
-    ConfigModule.forRoot(),
 
     TypeOrmModule.forRoot({
       type: 'postgres', 
-      host: process.env.DB_HOST,
-      database: process.env.DB_NAME,
-      port: +process.env.DB_PORT!,
-      password: process.env.DB_PASSWORD,
-      username: process.env.DB_USERNAME,
+      host: envs.DB_HOST,
+      database: envs.DB_NAME,
+      port: envs.DB_PORT,
+      password: envs.DB_PASSWORD,
+      username: envs.DB_USERNAME,
       autoLoadEntities: true,
       synchronize: true
     }),

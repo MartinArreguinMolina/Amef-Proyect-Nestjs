@@ -41,7 +41,6 @@ export class MessagesWsGateway implements OnGatewayConnection, OnGatewayDisconne
     this.wss.emit('clients-updated', this.messagesWsService.getConnectedClients())
   }
 
-
   // Escuchar al cliente
   @SubscribeMessage('message-from-client')
   onMessageFromClient(client: Socket, payload: CreateWebSocketDto){
