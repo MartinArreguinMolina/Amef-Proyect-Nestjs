@@ -13,6 +13,7 @@ import { WebSocketModule } from './web-socket/web-socket.module';
 import { MessagesModule } from './messages/messages.module';
 import { RoomMembersModule } from './room-members/room-members.module';
 import { envs } from './config/envs';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -49,6 +50,8 @@ import { envs } from './config/envs';
     MessagesModule,
 
     RoomMembersModule,
+
+    MailModule,
 
   ],
   controllers: [],

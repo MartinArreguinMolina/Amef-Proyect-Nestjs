@@ -6,11 +6,21 @@ import { Response } from 'express';
 export class AmefReportController {
   constructor(private readonly amefReportService: AmefReportService) { }
 
-  @Get(':id')
+  @Get(':id/pdf')
   async generateAmefReport(@Param('id', ParseUUIDPipe) id: string, @Res() response: Response) {
     const pdfDoc = await this.amefReportService.getAmefReport(id);
     response.setHeader('Content-Type', 'application/pdf');
     pdfDoc.info.Title = `Amef ${id}`;
+    pdfDoc.pipe(response);
+    pdfDoc.end();
+  }
+
+  @Get('example')
+  async example(@Res() response: Response) {
+    console.log('Generating example AMEF report');
+    const pdfDoc = await this.amefReportService.example();
+    response.setHeader('Content-Type', 'application/pdf');
+    pdfDoc.info.Title = `Amef example`;
     pdfDoc.pipe(response);
     pdfDoc.end();
   }

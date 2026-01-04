@@ -11,7 +11,7 @@ export class HandleErrors {
 
     switch (error.code) {
       case '23505': // unique_violation
-        throw new ConflictException(error.detail);
+        throw new ConflictException('Es posible que los datos que estas intentando ingresar ya existan' );
 
       case '23503': // foreign_key_violation
         throw new BadRequestException('Violación de llave foránea: ' + error.detail);

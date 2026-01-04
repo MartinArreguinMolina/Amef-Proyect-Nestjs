@@ -1,14 +1,18 @@
 import {
   StyleDictionary,
-  TDocumentDefinitions,
   Content,
   ContentTable,
   TableCell,
   TableLayout,
 } from "pdfmake/interfaces";
+
 import { getHeaderSection } from "./sections/header-section";
 import { OrganizationalInformation } from "src/organizational-information/entities/organizational-information.entity";
 import { getFooterSection } from "./sections/footer-section";
+import { Utils } from "src/utils/utils";
+import { TDocumentDefinitions } from 'pdfmake/interfaces';
+
+const utils = new Utils();
 
 const styles: StyleDictionary = {
   headerTitle: { fontSize: 18, color: "#FFFFFF", bold: true },
@@ -60,15 +64,15 @@ function buildAnalysisHeaderTable(): { header: TableCell[]; widths: (number | st
   const headerFill = "#002B5B";
   const widths = [70, 70, "*", 34, "*", 34, "*", 36, 40];
   const header: TableCell[] = [
-    { text: "systemFunction", style: "th", fillColor: headerFill },
-    { text: "failureMode", style: "th", fillColor: headerFill },
-    { text: "failureEffects", style: "th", fillColor: headerFill },
-    { text: "severity", style: "th", fillColor: headerFill },
-    { text: "failureCauses", style: "th", fillColor: headerFill },
-    { text: "occurrence", style: "th", fillColor: headerFill },
-    { text: "currentControls", style: "th", fillColor: headerFill },
-    { text: "detection", style: "th", fillColor: headerFill },
-    { text: "npr", style: "th", fillColor: headerFill },
+    { text: "Función del sistema", style: "th", fillColor: headerFill },
+    { text: "Modo de falla", style: "th", fillColor: headerFill },
+    { text: "Efectos de falla", style: "th", fillColor: headerFill },
+    { text: "Severidad", style: "th", fillColor: headerFill },
+    { text: "Causas de falla", style: "th", fillColor: headerFill },
+    { text: "Ocurrencia", style: "th", fillColor: headerFill },
+    { text: "Controles de prevención", style: "th", fillColor: headerFill },
+    { text: "Detección ", style: "th", fillColor: headerFill },
+    { text: "Npr", style: "th", fillColor: headerFill },
   ];
   return { header, widths };
 }
@@ -77,15 +81,15 @@ function buildActionsHeaderTable(): { header: TableCell[]; widths: (number | str
   const headerFill = "#002B5B";
   const widths = ["*", 90, 70, "*", 70, 42, 48, 48, 50];
   const header: TableCell[] = [
-    { text: "recommendedAction", style: "th", fillColor: headerFill },
-    { text: "responsible", style: "th", fillColor: headerFill },
-    { text: "targetDate", style: "th", fillColor: headerFill },
-    { text: "implementedAction", style: "th", fillColor: headerFill },
-    { text: "completionDate", style: "th", fillColor: headerFill },
-    { text: "newSeverity", style: "th", fillColor: headerFill },
-    { text: "newOccurrence", style: "th", fillColor: headerFill },
-    { text: "newDetection", style: "th", fillColor: headerFill },
-    { text: "newNpr", style: "th", fillColor: headerFill },
+    { text: "Acción recomendada", style: "th", fillColor: headerFill },
+    { text: "Responsable", style: "th", fillColor: headerFill },
+    { text: "Compromiso de cierre", style: "th", fillColor: headerFill },
+    { text: "Acción implementada", style: "th", fillColor: headerFill },
+    { text: "Fecha de cierre", style: "th", fillColor: headerFill },
+    { text: "Nueva Severidad", style: "th", fillColor: headerFill },
+    { text: "Nueva Ocurrencia", style: "th", fillColor: headerFill },
+    { text: "Nueva Detección", style: "th", fillColor: headerFill },
+    { text: "Nuevo Npr", style: "th", fillColor: headerFill },
   ];
   return { header, widths };
 }
@@ -190,14 +194,19 @@ function buildAnalysisBlock(a: any, idx: number): Content[] {
 
 export const getAmefReport = (body: OrganizationalInformation): TDocumentDefinitions => {
   const analyses = body?.analysis ?? [];
+  const headerOnce = getHeaderSection(body);
+  const headerBlock: Content = { ...(headerOnce as any), margin: [-20, -20, -20, 10], unbreakable: true };
+
 
   const content: Content[] = [
+    headerBlock,
+
     {
       text: 'Equipo',
       bold: true,
       fontSize: 12,
       color: "#002B5B",
-      margin: [0,0,0,10]
+      margin: [0, 0, 0, 10]
     },
     {
       table: {
@@ -211,9 +220,9 @@ export const getAmefReport = (body: OrganizationalInformation): TDocumentDefinit
           ],
 
           ...(body.team).map(u => ([
-            { text: u?.fullName ?? '—', margin: [8, 4, 8, 4] },
+            { text: utils.capitalizeWords(u?.fullName) ?? '—', margin: [8, 4, 8, 4] },
             { text: u?.email ?? '—', margin: [8, 4, 8, 4] },
-            { text: u?.departaments?.[0]?.department ?? '—', margin: [8, 4, 8, 4] },
+            { text: utils.capitalizeWords(u?.departaments?.[0]?.department) ?? '—', margin: [8, 4, 8, 4] },
           ])),
         ],
       },
@@ -228,17 +237,22 @@ export const getAmefReport = (body: OrganizationalInformation): TDocumentDefinit
       },
     },
 
-    { text: "Resumen de análisis", style: "sectionTitle", margin: [0, 8, 0, 4] },
+    {
+      text: "Resumen de análisis",
+      style: "sectionTitle",
+      margin: [0, 8, 0, 4]
+    },
     ...analyses.flatMap((a, idx) => buildAnalysisBlock(a, idx)),
   ];
 
+
   return {
     pageOrientation: "landscape",
-    pageMargins: [20, 100, 20, 100],
-    header: () => getHeaderSection(body),
+    pageMargins: [20, 20, 20, 20],
     footer: (currentPage, pageCount) => getFooterSection(currentPage, pageCount),
     content,
     styles,
     defaultStyle,
   };
+
 };

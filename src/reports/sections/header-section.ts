@@ -1,8 +1,12 @@
 import { Content } from "pdfmake/interfaces";
 import { OrganizationalInformation } from "src/organizational-information/entities/organizational-information.entity";
+import { Utils } from "src/utils/utils";
 
 
 export const getHeaderSection = (body: OrganizationalInformation): Content => {
+
+    const utils = new Utils();
+
     return {
         style: 'table',
         layout: 'noBorders',
@@ -13,7 +17,7 @@ export const getHeaderSection = (body: OrganizationalInformation): Content => {
                 [
                     {
                         stack: [
-                            { text: `AMFE`, style: "headerTitle" },
+                            { text: `AMEF`, style: "headerTitle" },
                             { text: `Fecha AMFE (Orig): ${body.dateOfOrigin}`, style: `headerFieldLabel` },
                             { text: `Fecha target: ${body.targetDate}`, style: `headerFieldLabel` },
                         ],
@@ -36,8 +40,8 @@ export const getHeaderSection = (body: OrganizationalInformation): Content => {
                     },
                     {
                         stack: [
-                            { text: `Departamento líder: ${body.leadingDepartment}`, style: `headerFieldLabel` },
-                            { text: `Preparado por: ${body.preparedBy.fullName}`, style: `headerFieldLabel` },
+                            { text: `Departamento líder: ${utils.capitalizeWords(body.leadingDepartment)}`, style: `headerFieldLabel` },
+                            { text: `Preparado por: ${utils.capitalizeWords(body.preparedBy.fullName)}`, style: `headerFieldLabel` },
                         ],
                     },
                 ],

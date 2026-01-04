@@ -126,7 +126,6 @@ export class AuthService {
       const currentUser = await this.planeUser(user)
       return currentUser;
     } catch (error) {
-      console.log(error)
       HandleErrors.handleDBErrors(error)
     }
   }
@@ -242,5 +241,10 @@ export class AuthService {
 
   remove(id: number) {
     return `This action removes a #${id} auth`;
+  }
+
+
+  async getAllRoles(){
+    return await this.rolRepository.find();
   }
 }

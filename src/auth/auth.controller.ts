@@ -27,6 +27,12 @@ export class AuthController {
     return this.authService.createRol(createRolDto)
   }
 
+
+  @Get('roles')
+  getAllRoles(){
+    return this.authService.getAllRoles()
+  }
+
   @Get('department/:department/user/:user')
   async findUserByDepartment(@Param('department') department: string, @Param('user') user: string){
     return this.authService.findUsersByDepartment(department, user);

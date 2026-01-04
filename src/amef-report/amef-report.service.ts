@@ -4,6 +4,7 @@ import { getAmefReport } from 'src/reports/amef-report';
 import { OrganizationalInformationService } from '../organizational-information/organizational-information.service';
 import { OrganizationalInformation } from 'src/organizational-information/entities/organizational-information.entity';
 import { buildAmefExcel } from 'src/reports/amef-excel';
+import jsondata from 'src/utils/example.json';
 
 @Injectable()
 export class AmefReportService {
@@ -19,6 +20,17 @@ export class AmefReportService {
         const organizationalInformation = await this.organizationalInformationService.findOne(id);
 
         const docDefinition = getAmefReport(organizationalInformation);
+        const doc = this.printerService.createPdf(docDefinition);
+
+        return doc;
+    }
+
+
+    async example() {
+
+        const exampleOrganizationalInformation: OrganizationalInformation = require('../utils/example.json');
+
+        const docDefinition = getAmefReport(exampleOrganizationalInformation);
         const doc = this.printerService.createPdf(docDefinition);
 
         return doc;

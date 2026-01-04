@@ -1,4 +1,4 @@
-import { BeforeInsert, Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, Or, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Rol } from "./rol.entity";
 import { ApiProperty } from "@nestjs/swagger";
 import { OrganizationalInformation } from "src/organizational-information/entities/organizational-information.entity";
@@ -30,7 +30,7 @@ export class User {
         uniqueItems: true
     })
     @Column('text', {
-        unique: true
+        unique: true,
     })
     email: string;
 

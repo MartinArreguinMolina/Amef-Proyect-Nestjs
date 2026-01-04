@@ -1,0 +1,303 @@
+{
+  "amefId": "8b7f4b21-2d9a-4b7a-9f3b-7c0a1e9c2f11",
+  "revision": 2,
+  "team": [
+    {
+      "fullName": "Valeria Jiménez Ramírez",
+      "email": "valeria.jimenez@uzon-energy.example",
+      "departaments": [
+        {
+          "department": "calidad"
+        }
+      ]
+    },
+    {
+      "fullName": "Héctor Alonso Medina Torres",
+      "email": "hector.medina@uzon-energy.example",
+      "departaments": [
+        {
+          "department": "mantenimiento"
+        }
+      ]
+    },
+    {
+      "fullName": "Fernanda López Castillo",
+      "email": "fernanda.lopez@uzon-energy.example",
+      "departaments": [
+        {
+          "department": "operacion"
+        }
+      ]
+    },
+    {
+      "fullName": "Luis Ángel Pacheco Vázquez",
+      "email": "luis.pacheco@uzon-energy.example",
+      "departaments": [
+        {
+          "department": "ingenieria"
+        }
+      ]
+    },
+    {
+      "fullName": "Mariana Rojas Aguilar",
+      "email": "mariana.rojas@uzon-energy.example",
+      "isActive": false,
+      "departaments": [
+        {
+          "department": "seguridad industrial"
+        }
+      ]
+    }
+  ],
+  "system": "Sistema de enfriamiento industrial por agua helada (Chiller) para línea de producción ",
+  "proyectCode": "UZON-PFMEA-CHILLER-019",
+  "leadingDepartment": "calidad",
+  "preparedBy": {
+    "fullName": "Santiago Arriaga Morales",
+    "email": "santiago.arriaga@uzon-energy.example"
+  },
+  "analysis": [
+    {
+      "organizationalInformation": null,
+      "actions": [
+        {
+          "recommendedAction": "Implementar monitoreo en línea de vibración y temperatura en rodamientos de la bomba principal con alarmas por umbral.",
+          "responsible": "Héctor Alonso Medina Torres",
+          "targetDate": "2026-01-20",
+          "implementedAction": "Se instalaron sensores de vibración/temperatura y se configuraron alarmas en el sistema de mantenimiento.",
+          "completionDate": "2026-01-18",
+          "newSeverity": 8,
+          "newOccurrence": 2,
+          "newDetection": 3,
+          "newNpr": 48
+        },
+        {
+          "recommendedAction": "Actualizar el plan de mantenimiento preventivo con lubricación estandarizada y verificación semanal de alineación del acoplamiento.",
+          "responsible": "Valeria Jiménez Ramírez",
+          "targetDate": "2026-01-25",
+          "implementedAction": "Se liberó el plan actualizado y se creó checklist digital por turno.",
+          "completionDate": "2026-01-23",
+          "newSeverity": 8,
+          "newOccurrence": 2,
+          "newDetection": 4,
+          "newNpr": 64
+        },
+        {
+          "recommendedAction": "Capacitar al personal de operación para reaccionar ante caída de presión y activar procedimiento de contingencia (bomba de respaldo).",
+          "responsible": "Fernanda López Castillo",
+          "targetDate": "2026-01-30",
+          "implementedAction": "Se impartieron sesiones de capacitación y simulacros de paro/arranque controlado.",
+          "completionDate": "2026-01-29",
+          "newSeverity": 8,
+          "newOccurrence": 2,
+          "newDetection": 4,
+          "newNpr": 64
+        }
+      ],
+      "systemFunction": "Mantener flujo de agua helada estable para disipación térmica en proceso",
+      "failureMode": "Bomba principal se detiene por falla de rodamientos",
+      "failureEffects": "Pérdida de enfriamiento; sobretemperatura; paro de línea; riesgo de daño a equipos",
+      "severity": 9,
+      "failureCauses": "Lubricación deficiente; desalineación; desgaste por operación continua",
+      "occurrence": 4,
+      "currentControls": "Mantenimiento preventivo mensual; inspección auditiva; bitácora manual",
+      "detection": 6,
+      "npr": 216,
+      "commentAnalysis": null
+    },
+    {
+      "organizationalInformation": null,
+      "actions": [
+        {
+          "recommendedAction": "Instalar transmisores redundantes de presión (2oo2) y validar lectura antes de disparo por baja presión.",
+          "responsible": "Valeria Jiménez Ramírez",
+          "targetDate": "2026-02-05",
+          "implementedAction": "Se instalaron dos transmisores y se actualizó lógica de validación en PLC.",
+          "completionDate": "2026-02-03",
+          "newSeverity": 7,
+          "newOccurrence": 2,
+          "newDetection": 3,
+          "newNpr": 42
+        },
+        {
+          "recommendedAction": "Crear estándar de calibración quincenal y registrar trazabilidad de calibración en formato digital.",
+          "responsible": "Héctor Alonso Medina Torres",
+          "targetDate": "2026-02-08",
+          "implementedAction": "Se programaron calibraciones quincenales y se habilitó registro con firma electrónica.",
+          "completionDate": "2026-02-07",
+          "newSeverity": 7,
+          "newOccurrence": 2,
+          "newDetection": 3,
+          "newNpr": 42
+        },
+        {
+          "recommendedAction": "Agregar verificación de integridad de cableado y conectores durante arranque de turno para reducir fallas intermitentes.",
+          "responsible": "Mariana Rojas Aguilar",
+          "targetDate": "2026-02-10",
+          "implementedAction": "Se añadió inspección al checklist y se capacitó al personal.",
+          "completionDate": "2026-02-09",
+          "newSeverity": 7,
+          "newOccurrence": 2,
+          "newDetection": 4,
+          "newNpr": 56
+        }
+      ],
+      "systemFunction": "Proteger el circuito ante condiciones de baja presión",
+      "failureMode": "Sensor de presión reporta valor erróneo (falso bajo)",
+      "failureEffects": "Paro innecesario de chiller; interrupción de producción; retrabajo",
+      "severity": 7,
+      "failureCauses": "Descalibración; cableado flojo; interferencia eléctrica",
+      "occurrence": 5,
+      "currentControls": "Calibración mensual; revisión visual de conexiones",
+      "detection": 5,
+      "npr": 175,
+      "commentAnalysis": null
+    },
+    {
+      "organizationalInformation": null,
+      "actions": [
+        {
+          "recommendedAction": "Implementar control de calidad del agua (conductividad y pH) con alarmas para evitar incrustaciones y corrosión.",
+          "responsible": "Luis Ángel Pacheco Vázquez",
+          "targetDate": "2026-02-15",
+          "implementedAction": "Se instaló medición en línea y se definieron rangos de operación; se contrató servicio de tratamiento.",
+          "completionDate": "2026-02-14",
+          "newSeverity": 6,
+          "newOccurrence": 2,
+          "newDetection": 3,
+          "newNpr": 36
+        },
+        {
+          "recommendedAction": "Agregar rutina de limpieza programada (CIP) y documentar evidencia fotográfica por intervención.",
+          "responsible": "Fernanda López Castillo",
+          "targetDate": "2026-02-18",
+          "implementedAction": "Se ejecutó CIP mensual y se estandarizó evidencia fotográfica en sistema.",
+          "completionDate": "2026-02-17",
+          "newSeverity": 6,
+          "newOccurrence": 2,
+          "newDetection": 4,
+          "newNpr": 48
+        },
+        {
+          "recommendedAction": "Instalar filtro de malla fina antes de la válvula de control para reducir partículas y bloqueos.",
+          "responsible": "Héctor Alonso Medina Torres",
+          "targetDate": "2026-02-20",
+          "implementedAction": "Se instaló filtro y se añadió inspección semanal de diferencial de presión.",
+          "completionDate": "2026-02-19",
+          "newSeverity": 6,
+          "newOccurrence": 2,
+          "newDetection": 3,
+          "newNpr": 36
+        }
+      ],
+      "systemFunction": "Mantener intercambio térmico eficiente en evaporador",
+      "failureMode": "Reducción de flujo por incrustación/obstrucción",
+      "failureEffects": "Menor capacidad de enfriamiento; consumo energético alto; inestabilidad de proceso",
+      "severity": 7,
+      "failureCauses": "Mala calidad del agua; falta de filtración; limpieza insuficiente",
+      "occurrence": 6,
+      "currentControls": "Filtro estándar; limpieza correctiva; monitoreo manual de temperatura",
+      "detection": 4,
+      "npr": 168,
+      "commentAnalysis": null
+    },
+    {
+      "organizationalInformation": null,
+      "actions": [
+        {
+          "recommendedAction": "Implementar inventario mínimo/máximo de refacciones críticas (sellos mecánicos, rodamientos, transmisores) con reposición automática.",
+          "responsible": "Luis Ángel Pacheco Vázquez",
+          "targetDate": "2026-02-25",
+          "implementedAction": "Se definieron niveles mínimos y se automatizó solicitud de compra al llegar al umbral.",
+          "completionDate": "2026-02-24",
+          "newSeverity": 8,
+          "newOccurrence": 2,
+          "newDetection": 2,
+          "newNpr": 32
+        },
+        {
+          "recommendedAction": "Estandarizar tiempos de respuesta (SLA) para atención de alarmas del chiller y registrar tiempos en bitácora digital.",
+          "responsible": "Mariana Rojas Aguilar",
+          "targetDate": "2026-03-01",
+          "implementedAction": "Se definió SLA por criticidad y se creó formato digital con alertas por retraso.",
+          "completionDate": "2026-02-28",
+          "newSeverity": 8,
+          "newOccurrence": 2,
+          "newDetection": 3,
+          "newNpr": 48
+        },
+        {
+          "recommendedAction": "Agregar prueba semanal del arranque de bomba de respaldo para asegurar disponibilidad real.",
+          "responsible": "Héctor Alonso Medina Torres",
+          "targetDate": "2026-03-03",
+          "implementedAction": "Se calendarizó prueba semanal y se exige evidencia en sistema.",
+          "completionDate": "2026-03-02",
+          "newSeverity": 8,
+          "newOccurrence": 2,
+          "newDetection": 3,
+          "newNpr": 48
+        }
+      ],
+      "systemFunction": "Asegurar continuidad del servicio de enfriamiento ante fallas",
+      "failureMode": "Tiempo de recuperación alto por falta de refacciones o respaldo no disponible",
+      "failureEffects": "Paro prolongado de línea; impacto en entregas; costo por tiempo muerto",
+      "severity": 9,
+      "failureCauses": "Sin stock; mala planeación; falta de pruebas al respaldo",
+      "occurrence": 4,
+      "currentControls": "Compras bajo demanda; mantenimiento correctivo; respaldo no probado",
+      "detection": 6,
+      "npr": 216,
+      "commentAnalysis": null
+    },
+    {
+      "organizationalInformation": null,
+      "actions": [
+        {
+          "recommendedAction": "Agregar protección eléctrica con monitoreo de voltaje/fase y registro de eventos para evitar disparos por variaciones.",
+          "responsible": "Valeria Jiménez Ramírez",
+          "targetDate": "2026-03-08",
+          "implementedAction": "Se instaló relevador de monitoreo de fase y se registran eventos en tablero.",
+          "completionDate": "2026-03-06",
+          "newSeverity": 6,
+          "newOccurrence": 2,
+          "newDetection": 3,
+          "newNpr": 36
+        },
+        {
+          "recommendedAction": "Estandarizar revisión de apriete en tableros eléctricos y termografía mensual para detectar puntos calientes.",
+          "responsible": "Héctor Alonso Medina Torres",
+          "targetDate": "2026-03-12",
+          "implementedAction": "Se realizó termografía base y se programó seguimiento mensual con reportes.",
+          "completionDate": "2026-03-10",
+          "newSeverity": 6,
+          "newOccurrence": 2,
+          "newDetection": 4,
+          "newNpr": 48
+        },
+        {
+          "recommendedAction": "Capacitar a operadores para distinguir alarma eléctrica vs mecánica y activar protocolo de escalamiento.",
+          "responsible": "Fernanda López Castillo",
+          "targetDate": "2026-03-15",
+          "implementedAction": "Se impartió capacitación y se colocaron guías rápidas junto al tablero del chiller.",
+          "completionDate": "2026-03-14",
+          "newSeverity": 6,
+          "newOccurrence": 2,
+          "newDetection": 4,
+          "newNpr": 48
+        }
+      ],
+      "systemFunction": "Suministrar energía estable a chiller y bombas",
+      "failureMode": "Disparo por falla eléctrica (baja tensión / pérdida de fase)",
+      "failureEffects": "Paro del chiller; interrupción del enfriamiento; alarmas en producción",
+      "severity": 7,
+      "failureCauses": "Variación en red; conexiones flojas; falta de protección adecuada",
+      "occurrence": 5,
+      "currentControls": "Protección estándar; revisión anual; diagnóstico reactivo",
+      "detection": 5,
+      "npr": 175,
+      "commentAnalysis": null
+    }
+  ],
+  "dateOfOrigin": "2025-11-28",
+  "targetDate": "2026-01-15"
+}
